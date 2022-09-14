@@ -2,6 +2,11 @@
     background :none;
     color: white;
     border : none;
+
+    &:hover {
+        background-color: rgb(43, 43, 50);
+        opacity: 1;
+    }
 }
 
 #ttle-open {

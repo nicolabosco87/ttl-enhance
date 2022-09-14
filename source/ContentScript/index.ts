@@ -48,7 +48,7 @@ const initButton = () => {
       return;
     }
 
-    const nextButton = document.querySelector("button[aria-controls=volume-controls]");
+    const nextButton = document.querySelector("button[data-testid=library-button]");
 
     if (nextButton) {
       const newButton = document.createElement("button");
@@ -66,7 +66,7 @@ const initButton = () => {
       };
       nextButton.parentNode?.append(newButton);
     }
-  }, 2000);
+  }, 1000);
 };
 
 const modal = document.createElement("div");
