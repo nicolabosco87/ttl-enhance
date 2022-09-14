@@ -1,27 +1,16 @@
 {
 	"extends": [
-		"@abhijithvijayan/eslint-config/typescript",
-		"@abhijithvijayan/eslint-config/node",
-		"@abhijithvijayan/eslint-config/react"
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:react/recommended",
+		"plugin:react-hooks/recommended",
+		"plugin:react/jsx-runtime",
+		"prettier"
 	],
-	"parserOptions": {
-		"project": [
-			"./tsconfig.json"
-		],
-		"sourceType": "module"
-	},
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint", "react", "prettier"],
 	"rules": {
-		"no-console": "off",
-		"no-extend-native": "off",
-		"react/jsx-props-no-spreading": "off",
-		"jsx-a11y/label-has-associated-control": "off",
-		"class-methods-use-this": "off",
-		"max-classes-per-file": "off",
-		"node/no-missing-import": "off",
-		"node/no-unpublished-import": "off",
-		"node/no-unsupported-features/es-syntax": ["error", {
-			"ignores": ["modules"]
-		}]
+		"react/prop-types": "off"
 	},
 	"env": {
 		"webextensions": true
@@ -29,6 +18,9 @@
 	"settings": {
 		"node": {
 			"tryExtensions": [".tsx"] // append tsx to the list as well
-		}
+		},
+		"react": {
+			"version": "detect"
+		  }
 	}
 }

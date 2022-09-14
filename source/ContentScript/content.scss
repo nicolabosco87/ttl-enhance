@@ -1,0 +1,81 @@
+.ttle-button {
+    background :none;
+    color: white;
+    border : none;
+}
+
+#ttle-open {
+    margin-right: 10px;
+
+    > svg {
+        height: 1.5rem;
+    }
+}
+
+#ttle-modal {
+    background: hsla(0,0%,0%,.33);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: auto;
+    z-index: 9999;
+    padding: 10vh 0px;
+    display: none;
+    flex-direction: column;
+    background-color: rgba(11, 10, 13, 0.5);
+    backdrop-filter: blur(25px);
+
+    &.active {
+        display: flex;
+    }
+}
+
+#ttle-modal__box {
+    min-width: 30vw;
+    max-width: 70rem;
+    transform: none;
+    color: white;
+    border-radius: 1.67rem;
+    background-color: #222228;
+    background-size: contain;
+    background-position: center top;
+    background-repeat: no-repeat;
+    padding: 0px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: black 0px 1.25rem 3rem;
+    flex-shrink: 0;
+    margin: auto;
+}
+
+#ttle-modal__header {
+    border-bottom: 1px solid rgba(196, 196, 196, 0.1);
+    display: flex;
+    min-height: 5rem;
+    padding: 1rem 2rem;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+}
+
+
+#ttle-modal__body {
+    margin: 2rem;
+}
+
+
+.ttle-checkbox {
+    height: 1.25rem;
+    width: 1.25rem;
+    accent-color: rgb(158, 74, 223);
+    cursor: pointer;
+}
+
+.ttle-label {
+    margin-bottom: 0px;
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
