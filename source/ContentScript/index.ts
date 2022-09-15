@@ -1,43 +1,9 @@
 import { browser } from "webextension-polyfill-ts";
-import { IOptions } from "./types";
+import { handleAutoDope } from "./autoDope";
+import { watchConfetti } from "./confetti";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 import "./content.scss";
-
-const log = (message: string) => console.log(`TTLEnhance: ${message}`);
-
-const getOptions = async () => {
-  const data = await browser.storage.sync.get({
-    autoDope: false,
-  });
-
-  return data as IOptions;
-};
-
-let autoDopeInterval: NodeJS.Timer;
-
-const handleAutoDope = (autoDope: boolean) => {
-  if (autoDope) {
-    autoDopeInterval = setInterval(() => {
-      const likeButton = document.querySelectorAll("[data-for='vote-button']")[1] as HTMLButtonElement;
-      if (likeButton) {
-        likeButton.click();
-      }
-    }, 5000);
-    log("AutoDope enabled");
-  } else {
-    if (autoDopeInterval) {
-      clearInterval(autoDopeInterval);
-    }
-    log("AutoDope disabled");
-  }
-};
-
-// const switchAutoDope = async () => {
-//   const options = await getOptions();
-
-//   browser.storage.sync.set({
-//     autoDope: !options.autoDope,
-//   });
-// };
+import { getOptions, log } from "./utils";
 
 const initButton = () => {
   log("initButton");
@@ -84,6 +50,10 @@ const initModal = async () => {
       <input id="ttle-autodope" aria-invalid="false" type="checkbox" class="ttle-checkbox" checked="">
       <label for="ttle-autodope" class="ttle-label">Enable AutoDope</label>
     <div>
+    <div class="" style="margin-top: 0.5rem;">
+      <input id="ttle-confetti-check" aria-invalid="false" type="checkbox" class="ttle-checkbox" checked="">
+      <label for="ttle-confetti-check" class="ttle-label">Enable Confetti</label>
+    <div>
   </div>
   </div>
 
@@ -102,11 +72,20 @@ const initModal = async () => {
       }
 
       const autodopeCheckbox = document.getElementById("ttle-autodope") as HTMLInputElement;
+      const confettiCheckbox = document.getElementById("ttle-confetti-check") as HTMLInputElement;
       if (autodopeCheckbox) {
         autodopeCheckbox.checked = options.autoDope;
         autodopeCheckbox.onclick = () => {
           browser.storage.sync.set({
             autoDope: autodopeCheckbox.checked,
+          });
+        };
+      }
+      if (confettiCheckbox) {
+        confettiCheckbox.checked = options.confetti;
+        confettiCheckbox.onclick = () => {
+          browser.storage.sync.set({
+            confettiCheckbox: confettiCheckbox.checked,
           });
         };
       }
@@ -123,6 +102,7 @@ const initTTLEnhance = async () => {
 
   initButton();
   initModal();
+  watchConfetti();
 
   // get options
   const options = await getOptions();
