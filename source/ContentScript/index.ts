@@ -1,12 +1,12 @@
 import { browser } from "webextension-polyfill-ts";
 import { handleAutoDope } from "./autoDope";
-import { watchConfetti } from "./confetti";
+import { initConfetti } from "./confetti";
 import { handleHideLightbulbs, initHideLightBulbs } from "./hideLightbulbs";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import "./content.scss";
 import { handleMoveVibeMeter, initMoveVibeMeter } from "./moveVibemeter";
-import { getOptions, log } from "./utils";
+import { getOptions, log, onElRemove, waitForEl } from "./utils";
 
 const initButton = () => {
   log("initButton");
@@ -142,14 +142,15 @@ const initTTLEnhance = async () => {
 
   initButton();
   initModal();
-  watchConfetti();
 
   // get options
   const options = await getOptions();
 
   handleAutoDope(options.autoDope);
-  initMoveVibeMeter(options.moveVibeMeter);
-  initHideLightBulbs(options.hideLightbulbs);
+
+  waitForEl("#chat-users-scroll-area").then(() => {
+    refreshSidebarFeatures();
+  });
 
   browser.storage.onChanged.addListener((changes: any) => {
     if (changes.autoDope !== undefined) {
@@ -165,3 +166,18 @@ const initTTLEnhance = async () => {
 };
 
 initTTLEnhance();
+
+const refreshSidebarFeatures = async () => {
+  const options = await getOptions();
+  initMoveVibeMeter(options.moveVibeMeter);
+  initHideLightBulbs(options.hideLightbulbs);
+  initConfetti();
+
+  console.log("ADD WAITING FOR REMOVED SIDEBAR");
+  onElRemove("#chat-users-scroll-area").then(() => {
+    console.log("ADD WAITING FOR SIDEBAR");
+    waitForEl("#chat-users-scroll-area").then(() => {
+      refreshSidebarFeatures();
+    });
+  });
+};

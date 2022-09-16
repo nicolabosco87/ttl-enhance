@@ -9,7 +9,7 @@ export const getOptions = async () => {
     autoDope: false,
     confetti: false,
     hideLightbulbs: false,
-    moveVibeMeter: false
+    moveVibeMeter: false,
     // },
   });
 
@@ -26,3 +26,56 @@ export const getOptions = async () => {
 //     },
 //   });
 // };
+
+export function waitForEl(selector: string) {
+  return new Promise((resolve) => {
+    if (document.querySelector(selector)) {
+      return resolve(document.querySelector(selector));
+    }
+
+    const observer = new MutationObserver(() => {
+      if (document.querySelector(selector)) {
+        resolve(document.querySelector(selector));
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  });
+}
+
+export function onElRemove(selector: string) {
+  return new Promise<void>((resolve) => {
+    const element = document.querySelector(selector);
+    if (!element) {
+      resolve();
+      return;
+    }
+
+    const parent = element.parentNode;
+    if (!parent) throw new Error("The node must already be attached");
+
+    const obs = new MutationObserver(() => {
+      console.log(document.body.contains(element));
+      if (!document.body.contains(element)) {
+        obs.disconnect();
+        resolve();
+      }
+      // for (const mutation of mutations) {
+      //   for (const el of mutation.removedNodes) {
+      //     if (el === element) {
+      //       obs.disconnect();
+      //       // callback();
+      //       resolve();
+      //     }
+      //   }
+      // }
+    });
+    obs.observe(document.body, {
+      childList: true,
+    });
+  });
+}

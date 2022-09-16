@@ -1,7 +1,7 @@
-import { getOptions } from "./utils";
+import { getOptions, onElRemove, waitForEl } from "./utils";
 const confetti = require("canvas-confetti");
 
-const MIN_ANGLE_FOR_SUCCESSFUL_TRACK = 45;
+const MIN_ANGLE_FOR_SUCCESSFUL_TRACK = 40;
 
 const isSuccessfullTrack = () => {
   const needle = document.querySelectorAll("[src*='needle']")[0];
@@ -31,36 +31,36 @@ const isSuccessfullTrack = () => {
   return angle >= MIN_ANGLE_FOR_SUCCESSFUL_TRACK;
 };
 
-export const watchConfetti = () => {
-  const confettiCanvas = document.createElement("canvas");
-  confettiCanvas.id = "ttle-confetti";
-
-  const setCanvasInterval = setInterval(() => {
+export const initConfetti = () => {
+  waitForEl("[src*='needle']").then(() => {
     const needle = document.querySelector("[src*='needle']");
 
-    if (needle) {
-      clearInterval(setCanvasInterval);
+    if (needle && needle.parentElement?.parentElement?.parentElement) {
+      const confettiCanvas = document.createElement("canvas");
+      confettiCanvas.id = "ttle-confetti";
 
-      if (needle.parentElement?.parentElement?.parentElement) {
-        needle.parentElement?.parentElement?.parentElement?.append(confettiCanvas);
-        needle.parentElement.parentElement.parentElement.style.position = "relative";
-      }
+      needle.parentElement.parentElement.parentElement.append(confettiCanvas);
+      needle.parentElement.parentElement.parentElement.style.position = "relative";
+
+      const myConfetti = confetti.create(confettiCanvas, { resize: true });
+
+      const confettiInterval = setInterval(async () => {
+        const newOptions = await getOptions();
+        if (newOptions.confetti && isSuccessfullTrack()) {
+          if (!document.hidden) {
+            myConfetti({
+              particleCount: 100,
+              spread: 70,
+              scalar: 1.5,
+              origin: { y: 0 },
+            });
+          }
+        }
+      }, 1000);
+
+      onElRemove("#ttle-confetti").then(() => {
+        clearInterval(confettiInterval);
+      });
     }
   });
-
-  const myConfetti = confetti.create(confettiCanvas, { resize: true });
-
-  setInterval(async () => {
-    const newOptions = await getOptions();
-    if (newOptions.confetti && isSuccessfullTrack()) {
-      if (!document.hidden) {
-        myConfetti({
-          particleCount: 100,
-          spread: 70,
-          scalar: 1.5,
-          origin: { y: 0 },
-        });
-      }
-    }
-  }, 1000);
 };
