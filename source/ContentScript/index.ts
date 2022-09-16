@@ -1,6 +1,8 @@
 import { browser } from "webextension-polyfill-ts";
 import { handleAutoDope } from "./autoDope";
+import { handleHideLightbulbs } from "./hideLightbulbs"
 import { watchConfetti } from "./confetti";
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import "./content.scss";
 import { getOptions, log } from "./utils";
@@ -44,23 +46,32 @@ const initModal = async () => {
 
   modal.id = "ttle-modal";
 
-  modal.innerHTML = `<div id="ttle-modal__box"><div id="ttle-modal__header">
-  <h2 id="modal-title">TTL Enhance</h2>
-  <button id="ttle-modal-close" class="sc-dkzDqf dfHUdv sc-iBkjds bDgMN"><svg width="1em" height="1em" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Close Button</title><path d="M1 1L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9 1L1 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
-  </div>
-  <div id="ttle-modal__body">
-    <div class="" style="margin-top: 0.5rem;">
-      <input id="ttle-autodope" aria-invalid="false" type="checkbox" class="ttle-checkbox" checked="">
-      <label for="ttle-autodope" class="ttle-label">Enable AutoDope</label>
-    <div>
-    <div class="" style="margin-top: 0.5rem;">
-      <input id="ttle-confetti-check" aria-invalid="false" type="checkbox" class="ttle-checkbox" checked="">
-      <label for="ttle-confetti-check" class="ttle-label">Enable Confetti</label>
-    <div>
-  </div>
-  </div>
+  modal.innerHTML = `
+    <div id="ttle-modal__box">
+      <div id="ttle-modal__header">
+        <h2 id="modal-title">TTL Enhance</h2>
+        <button id="ttle-modal-close" class="sc-dkzDqf dfHUdv sc-iBkjds bDgMN">
+          <svg width="1em" height="1em" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Close Button</title><path d="M1 1L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9 1L1 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+      </div>
+      <div id="ttle-modal__body">
+        <div class="" style="margin-top: 0.5rem;">
+          <input id="ttle-autodope" aria-invalid="false" type="checkbox" class="ttle-checkbox" checked="">
+          <label for="ttle-autodope" class="ttle-label">Enable AutoDope</label>
+        <div>
 
-  </div></div>`;
+        <div style="margin-top: 0.5rem;">
+          <input id="ttle-confetti-check" aria-invalid="false" type="checkbox" class="ttle-checkbox" checked="">
+          <label for="ttle-confetti-check" class="ttle-label">Enable Confetti</label>
+        <div>
+
+        <div style="margin-top: 0.5rem;">
+          <input id="ttle-hide-lightbulbs-check" aria-invalid="false" type="checkbox" class="ttle-checkbox" checked="">
+          <label for="ttle-hide-lightbulbs-check" class="ttle-label">Hide LightBulbs</label>
+        </div>
+      </div>
+    </div>
+  `;
 
   const body = document.querySelector("body");
   if (body) {
@@ -76,6 +87,7 @@ const initModal = async () => {
 
       const autodopeCheckbox = document.getElementById("ttle-autodope") as HTMLInputElement;
       const confettiCheckbox = document.getElementById("ttle-confetti-check") as HTMLInputElement;
+      const hideLightbulbsCheckbox = document.getElementById("ttle-hide-lightbulbs-check") as HTMLInputElement;
 
       if (autodopeCheckbox) {
         autodopeCheckbox.checked = options.autoDope;
@@ -90,6 +102,14 @@ const initModal = async () => {
         confettiCheckbox.onclick = () => {
           browser.storage.sync.set({
             confetti: confettiCheckbox.checked,
+          });
+        };
+      }
+      if (hideLightbulbsCheckbox) {
+        hideLightbulbsCheckbox.checked = options.hideLightbulbs;
+        hideLightbulbsCheckbox.onclick = () => {
+          browser.storage.sync.set({
+            hideLightbulbs: hideLightbulbsCheckbox.checked,
           });
         };
       }
@@ -113,11 +133,15 @@ const initTTLEnhance = async () => {
   console.log("initial options", options);
 
   handleAutoDope(options.autoDope);
+  handleHideLightbulbs(options.hideLightbulbs);
 
   browser.storage.onChanged.addListener((changes: any) => {
     console.log("CHANGES", changes);
     if (changes.autoDope !== undefined) {
       handleAutoDope(changes.autoDope.newValue);
+    }
+    if (changes.hideLightbulbs !== undefined) {
+      handleHideLightbulbs(changes.hideLightbulbs.newValue);
     }
   });
 };

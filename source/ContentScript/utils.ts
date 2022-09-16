@@ -8,6 +8,7 @@ export const getOptions = async () => {
     // settings: {
     autoDope: false,
     confetti: false,
+    hideLightbulbs: false,
     // },
   });
 
