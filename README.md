@@ -3,3 +3,4 @@
 Add features to TurnTable Live:
 
 - AutoDope
+- Confetti
