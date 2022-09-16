@@ -40,8 +40,6 @@ const modal = document.createElement("div");
 const initModal = async () => {
   const options = await getOptions();
 
-  console.log("Initial Options", options);
-
   modal.id = "ttle-modal";
 
   modal.innerHTML = `<div id="ttle-modal__box"><div id="ttle-modal__header">
@@ -110,12 +108,10 @@ const initTTLEnhance = async () => {
 
   // get options
   const options = await getOptions();
-  console.log("initial options", options);
 
   handleAutoDope(options.autoDope);
 
   browser.storage.onChanged.addListener((changes: any) => {
-    console.log("CHANGES", changes);
     if (changes.autoDope !== undefined) {
       handleAutoDope(changes.autoDope.newValue);
     }

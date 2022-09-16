@@ -52,13 +52,12 @@ export const watchConfetti = () => {
 
   setInterval(async () => {
     const newOptions = await getOptions();
-    // const confettiStatus = await browser.storage.sync.get("confetti");
-    console.log(newOptions.confetti, isSuccessfullTrack());
-
     if (newOptions.confetti && isSuccessfullTrack()) {
       if (!document.hidden) {
         myConfetti({
+          particleCount: 100,
           spread: 70,
+          scalar: 1.5,
           origin: { y: 0 },
         });
       }
