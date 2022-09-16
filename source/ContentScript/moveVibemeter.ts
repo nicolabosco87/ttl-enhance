@@ -1,4 +1,4 @@
-import { log } from "./utils";
+import { log, waitForEl } from "./utils";
 
 export const handleMoveVibeMeter = (moveVibeMeter: boolean) => {
   const needleElement = document.querySelector("[src*='needle']");
@@ -18,11 +18,13 @@ export const handleMoveVibeMeter = (moveVibeMeter: boolean) => {
 export const initMoveVibeMeter = (moveVibeMeter: boolean) => {
   if (!moveVibeMeter) return;
 
-  const check = setInterval(() => {
-    const needleElement = document.querySelector("[src*='needle']");
-    if (needleElement) {
-      clearInterval(check);
-      handleMoveVibeMeter(moveVibeMeter);
-    }
-  });
+  waitForEl("[src*='needle']").then(() => handleMoveVibeMeter(moveVibeMeter));
+
+  // const check = setInterval(() => {
+  //   const needleElement = document.querySelector("[src*='needle']");
+  //   if (needleElement) {
+  //     clearInterval(check);
+  //     handleMoveVibeMeter(moveVibeMeter);
+  //   }
+  // });
 };
