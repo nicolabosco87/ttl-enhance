@@ -1,6 +1,6 @@
 import { browser } from "webextension-polyfill-ts";
 import { handleAutoDope } from "./autoDope";
-import { handleHideLightbulbs } from "./hideLightbulbs"
+import { handleHideLightbulbs, initHideLightBulbs } from "./hideLightbulbs";
 import { watchConfetti } from "./confetti";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -130,7 +130,7 @@ const initTTLEnhance = async () => {
   const options = await getOptions();
 
   handleAutoDope(options.autoDope);
-  handleHideLightbulbs(options.hideLightbulbs);
+  initHideLightBulbs(options.hideLightbulbs);
 
   browser.storage.onChanged.addListener((changes: any) => {
     if (changes.autoDope !== undefined) {
