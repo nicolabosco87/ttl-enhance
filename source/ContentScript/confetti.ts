@@ -1,6 +1,8 @@
 import { getOptions } from "./utils";
 const confetti = require("canvas-confetti");
 
+const MIN_ANGLE_FOR_SUCCESSFUL_TRACK = 45;
+
 const isSuccessfullTrack = () => {
   const needle = document.querySelectorAll("[src*='needle']")[0];
 
@@ -12,7 +14,11 @@ const isSuccessfullTrack = () => {
     st.getPropertyValue("-ms-transform") ||
     st.getPropertyValue("-o-transform") ||
     st.getPropertyValue("transform") ||
-    "fail...";
+    false;
+
+  if (!tr) {
+    return false;
+  }
 
   let values = tr.split("(")[1];
   values = values.split(")")[0];
@@ -20,13 +26,9 @@ const isSuccessfullTrack = () => {
 
   const a = Number(valuesSplitted[0]);
   const b = Number(valuesSplitted[1]);
-  //   const c = Number(valuesSplitted[2]);
-  // const d = Number(valuesSplitted[3]);
-  //   const scale = Math.sqrt(a * a + b * b);
-  //   const sin = b / scale;
   const angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
 
-  return angle >= 45;
+  return angle >= MIN_ANGLE_FOR_SUCCESSFUL_TRACK;
 };
 
 export const watchConfetti = () => {
@@ -46,8 +48,6 @@ export const watchConfetti = () => {
     }
   });
 
-  // you should  only initialize a canvas once, so save this function
-  // we'll save it to the canvas itself for the purpose of this demo
   const myConfetti = confetti.create(confettiCanvas, { resize: true });
 
   setInterval(async () => {

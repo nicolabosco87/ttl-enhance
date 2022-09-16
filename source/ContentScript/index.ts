@@ -1,11 +1,11 @@
 import { browser } from "webextension-polyfill-ts";
 import { handleAutoDope } from "./autoDope";
-import { handleHideLightbulbs } from "./hideLightbulbs"
 import { watchConfetti } from "./confetti";
+import { handleHideLightbulbs, initHideLightBulbs } from "./hideLightbulbs";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import "./content.scss";
-import { handleMoveVibeMeter } from "./moveVibemeter";
+import { handleMoveVibeMeter, initMoveVibeMeter } from "./moveVibemeter";
 import { getOptions, log } from "./utils";
 
 const initButton = () => {
@@ -129,8 +129,6 @@ const initModal = async () => {
           });
         };
       }
-
-
     });
   }
 };
@@ -150,8 +148,8 @@ const initTTLEnhance = async () => {
   const options = await getOptions();
 
   handleAutoDope(options.autoDope);
-  handleHideLightbulbs(options.hideLightbulbs);
-  handleMoveVibeMeter(options.moveVibeMeter);
+  initMoveVibeMeter(options.moveVibeMeter);
+  initHideLightBulbs(options.hideLightbulbs);
 
   browser.storage.onChanged.addListener((changes: any) => {
     if (changes.autoDope !== undefined) {
@@ -161,7 +159,7 @@ const initTTLEnhance = async () => {
       handleHideLightbulbs(changes.hideLightbulbs.newValue);
     }
     if (changes.moveVibeMeter !== undefined) {
-      handleMoveVibeMeter(changes.moveVibeMeter.newValue)
+      handleMoveVibeMeter(changes.moveVibeMeter.newValue);
     }
   });
 };
