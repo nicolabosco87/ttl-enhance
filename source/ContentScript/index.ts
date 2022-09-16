@@ -39,6 +39,9 @@ const modal = document.createElement("div");
 
 const initModal = async () => {
   const options = await getOptions();
+
+  console.log("Initial Options", options);
+
   modal.id = "ttle-modal";
 
   modal.innerHTML = `<div id="ttle-modal__box"><div id="ttle-modal__header">
@@ -73,6 +76,7 @@ const initModal = async () => {
 
       const autodopeCheckbox = document.getElementById("ttle-autodope") as HTMLInputElement;
       const confettiCheckbox = document.getElementById("ttle-confetti-check") as HTMLInputElement;
+
       if (autodopeCheckbox) {
         autodopeCheckbox.checked = options.autoDope;
         autodopeCheckbox.onclick = () => {
@@ -85,7 +89,7 @@ const initModal = async () => {
         confettiCheckbox.checked = options.confetti;
         confettiCheckbox.onclick = () => {
           browser.storage.sync.set({
-            confettiCheckbox: confettiCheckbox.checked,
+            confetti: confettiCheckbox.checked,
           });
         };
       }
@@ -106,10 +110,12 @@ const initTTLEnhance = async () => {
 
   // get options
   const options = await getOptions();
+  console.log("initial options", options);
 
   handleAutoDope(options.autoDope);
 
-  browser.storage.onChanged.addListener((changes) => {
+  browser.storage.onChanged.addListener((changes: any) => {
+    console.log("CHANGES", changes);
     if (changes.autoDope !== undefined) {
       handleAutoDope(changes.autoDope.newValue);
     }

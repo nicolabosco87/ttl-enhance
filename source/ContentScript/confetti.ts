@@ -1,5 +1,4 @@
 import { getOptions } from "./utils";
-
 const confetti = require("canvas-confetti");
 
 const isSuccessfullTrack = () => {
@@ -19,12 +18,12 @@ const isSuccessfullTrack = () => {
   values = values.split(")")[0];
   const valuesSplitted = values.split(",");
 
-  const a = valuesSplitted[0];
-  const b = valuesSplitted[1];
-  const c = valuesSplitted[2];
-  const d = valuesSplitted[3];
-  const scale = Math.sqrt(a * a + b * b);
-  const sin = b / scale;
+  const a = Number(valuesSplitted[0]);
+  const b = Number(valuesSplitted[1]);
+  //   const c = Number(valuesSplitted[2]);
+  // const d = Number(valuesSplitted[3]);
+  //   const scale = Math.sqrt(a * a + b * b);
+  //   const sin = b / scale;
   const angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
 
   return angle >= 45;
@@ -52,12 +51,17 @@ export const watchConfetti = () => {
   const myConfetti = confetti.create(confettiCanvas, { resize: true });
 
   setInterval(async () => {
-    const options = await getOptions();
-    if (options.confetti && isSuccessfullTrack()) {
-      myConfetti({
-        spread: 70,
-        origin: { y: 0 },
-      });
+    const newOptions = await getOptions();
+    // const confettiStatus = await browser.storage.sync.get("confetti");
+    console.log(newOptions.confetti, isSuccessfullTrack());
+
+    if (newOptions.confetti && isSuccessfullTrack()) {
+      if (!document.hidden) {
+        myConfetti({
+          spread: 70,
+          origin: { y: 0 },
+        });
+      }
     }
   }, 1000);
 };
