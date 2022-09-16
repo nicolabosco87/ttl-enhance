@@ -5,6 +5,7 @@ import { watchConfetti } from "./confetti";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import "./content.scss";
+import { handleMoveVibeMeter } from "./moveVibemeter";
 import { getOptions, log } from "./utils";
 
 const initButton = () => {
@@ -67,6 +68,11 @@ const initModal = async () => {
           <input id="ttle-hide-lightbulbs-check" aria-invalid="false" type="checkbox" class="ttle-checkbox" checked="">
           <label for="ttle-hide-lightbulbs-check" class="ttle-label">Hide LightBulbs</label>
         </div>
+        
+        <div style="margin-top: 0.5rem;">
+          <input id="ttle-move-vibe-meter-check" aria-invalid="false" type="checkbox" class="ttle-checkbox" checked="">
+          <label for="ttle-move-vibe-meter-check" class="ttle-label">Move VibeMeter to top</label>
+        </div>
       </div>
     </div>
   `;
@@ -86,6 +92,7 @@ const initModal = async () => {
       const autodopeCheckbox = document.getElementById("ttle-autodope") as HTMLInputElement;
       const confettiCheckbox = document.getElementById("ttle-confetti-check") as HTMLInputElement;
       const hideLightbulbsCheckbox = document.getElementById("ttle-hide-lightbulbs-check") as HTMLInputElement;
+      const moveVibeMeterCheckbox = document.getElementById("ttle-move-vibe-meter-check") as HTMLInputElement;
 
       if (autodopeCheckbox) {
         autodopeCheckbox.checked = options.autoDope;
@@ -95,6 +102,7 @@ const initModal = async () => {
           });
         };
       }
+
       if (confettiCheckbox) {
         confettiCheckbox.checked = options.confetti;
         confettiCheckbox.onclick = () => {
@@ -103,6 +111,7 @@ const initModal = async () => {
           });
         };
       }
+
       if (hideLightbulbsCheckbox) {
         hideLightbulbsCheckbox.checked = options.hideLightbulbs;
         hideLightbulbsCheckbox.onclick = () => {
@@ -111,6 +120,17 @@ const initModal = async () => {
           });
         };
       }
+
+      if (moveVibeMeterCheckbox) {
+        moveVibeMeterCheckbox.checked = options.moveVibeMeter;
+        moveVibeMeterCheckbox.onclick = () => {
+          browser.storage.sync.set({
+            moveVibeMeter: moveVibeMeterCheckbox.checked,
+          });
+        };
+      }
+
+
     });
   }
 };
@@ -131,6 +151,7 @@ const initTTLEnhance = async () => {
 
   handleAutoDope(options.autoDope);
   handleHideLightbulbs(options.hideLightbulbs);
+  handleMoveVibeMeter(options.moveVibeMeter);
 
   browser.storage.onChanged.addListener((changes: any) => {
     if (changes.autoDope !== undefined) {
@@ -138,6 +159,9 @@ const initTTLEnhance = async () => {
     }
     if (changes.hideLightbulbs !== undefined) {
       handleHideLightbulbs(changes.hideLightbulbs.newValue);
+    }
+    if (changes.moveVibeMeter !== undefined) {
+      handleMoveVibeMeter(changes.moveVibeMeter.newValue)
     }
   });
 };

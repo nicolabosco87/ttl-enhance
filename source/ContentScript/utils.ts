@@ -9,6 +9,7 @@ export const getOptions = async () => {
     autoDope: false,
     confetti: false,
     hideLightbulbs: false,
+    moveVibeMeter: false
     // },
   });
 
