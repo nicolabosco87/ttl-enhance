@@ -3,6 +3,8 @@ const confetti = require("canvas-confetti");
 
 const MIN_ANGLE_FOR_SUCCESSFUL_TRACK = 40;
 
+let confettiInterval: NodeJS.Timeout;
+
 const isSuccessfullTrack = () => {
   const needle = document.querySelectorAll("[src*='needle']")[0];
 
@@ -44,7 +46,12 @@ export const initConfetti = () => {
 
       const myConfetti = confetti.create(confettiCanvas, { resize: true });
 
-      const confettiInterval = setInterval(async () => {
+      // Reset interval if already enabled
+      if (confettiInterval) {
+        clearInterval(confettiInterval);
+      }
+
+      confettiInterval = setInterval(async () => {
         const newOptions = await getOptions();
         if (newOptions.confetti && isSuccessfullTrack()) {
           if (!document.hidden) {
@@ -59,7 +66,9 @@ export const initConfetti = () => {
       }, 1000);
 
       onElRemove("#ttle-confetti").then(() => {
-        clearInterval(confettiInterval);
+        if (confettiInterval) {
+          clearInterval(confettiInterval);
+        }
       });
     }
   });

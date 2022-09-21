@@ -173,9 +173,7 @@ const refreshSidebarFeatures = async () => {
   initHideLightBulbs(options.hideLightbulbs);
   initConfetti();
 
-  console.log("ADD WAITING FOR REMOVED SIDEBAR");
   onElRemove("#chat-users-scroll-area").then(() => {
-    console.log("ADD WAITING FOR SIDEBAR");
     waitForEl("#chat-users-scroll-area").then(() => {
       refreshSidebarFeatures();
     });
