@@ -1,12 +1,15 @@
 import { browser } from "webextension-polyfill-ts";
-import { handleAutoDope } from "./autoDope";
-import { initConfetti } from "./confetti";
-import { handleHideLightbulbs, initHideLightBulbs } from "./hideLightbulbs";
+import { handleAutoDope } from "./plugins/autoDope";
+import { initConfetti } from "./plugins/confetti";
+import { handleHideLightbulbs, initHideLightBulbs } from "./plugins/hideLightbulbs";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import "./content.scss";
-import { handleMoveVibeMeter, initMoveVibeMeter } from "./moveVibemeter";
+import { CollectLikes } from "./plugins/collectLikes";
+import { handleMoveVibeMeter, initMoveVibeMeter } from "./plugins/moveVibemeter";
 import { getOptions, log, onElRemove, waitForEl } from "./utils";
+
+const collectLikes = new CollectLikes();
 
 const initButton = () => {
   log("initButton");
@@ -142,6 +145,7 @@ const initTTLEnhance = async () => {
 
   initButton();
   initModal();
+  collectLikes.init();
 
   // get options
   const options = await getOptions();

@@ -1,4 +1,4 @@
-import { log, waitForEl } from "./utils";
+import { log, waitForEl } from "../utils";
 
 export const handleMoveVibeMeter = (moveVibeMeter: boolean) => {
   const needleElement = document.querySelector("[src*='needle']");

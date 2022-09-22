@@ -1,4 +1,4 @@
-import { getOptions, onElRemove, waitForEl } from "./utils";
+import { getOptions, onElRemove, waitForEl } from "../utils";
 const confetti = require("canvas-confetti");
 
 const MIN_ANGLE_FOR_SUCCESSFUL_TRACK = 40;
