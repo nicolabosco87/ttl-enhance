@@ -136,7 +136,7 @@ module.exports = {
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: [
         path.join(process.cwd(), `extension/${targetBrowser}`),
-        path.join(process.cwd(), `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`),
+        path.join(process.cwd(), `extension/ttl-enhance-${targetBrowser}.${getExtensionFileType(targetBrowser)}`),
       ],
       cleanStaleWebpackAssets: false,
       verbose: true,
@@ -175,7 +175,7 @@ module.exports = {
               {
                 format: "zip",
                 source: path.join(destPath, targetBrowser),
-                destination: `${path.join(destPath, targetBrowser)}.${getExtensionFileType(targetBrowser)}`,
+                destination: `ttl-enhance-${path.join(destPath, targetBrowser)}.${getExtensionFileType(targetBrowser)}`,
                 options: { zlib: { level: 6 } },
               },
             ],
