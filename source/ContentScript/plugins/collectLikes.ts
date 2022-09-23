@@ -1,7 +1,8 @@
 import { io, Socket } from "socket.io-client";
 import { SocketMessages } from "../types";
+import { log } from "../utils";
 
-const JWT_TOKEN = "";
+const JWT_TOKEN = localStorage.getItem("token-storage");
 
 type TSongStat = {
   title: string;
@@ -27,11 +28,6 @@ export class CollectLikes {
       const currentDancefloor = JSON.parse(currentDancefloorRaw);
 
       if (currentDancefloor) {
-        const socketUrl = `wss://${currentDancefloor.state.config.socketDomain}${currentDancefloor.state.config.socketPath}`;
-
-        console.log("Connecting to", socketUrl);
-
-        // https://
         this.connection = io(`${currentDancefloor.state.config.socketDomain}`, {
           path: currentDancefloor.state.config.socketPath,
           transportOptions: {
@@ -60,7 +56,7 @@ export class CollectLikes {
 
         // Resolve on successful connection
         this.connection.on("connect", () => {
-          console.log("SOCKET CONNECTED");
+          log("Collect Likes enabled");
 
           this.updatePreviousPlayed();
         });
