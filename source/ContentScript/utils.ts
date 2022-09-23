@@ -1,11 +1,13 @@
 import { browser } from "webextension-polyfill-ts";
 import { IOptions } from "./types";
 
-export const log = (message: string) => console.log(`TTLEnhance: ${message}`);
+export const log = (message: string, ...otherMessages: string[]) =>
+  console.log(`TTLEnhance: ${message}`, ...otherMessages);
 
 export const getOptions = async () => {
   const data = await browser.storage.sync.get({
     autoDope: false,
+    stats: false,
     confetti: false,
     hideLightbulbs: false,
     moveVibeMeter: false,
@@ -14,15 +16,17 @@ export const getOptions = async () => {
   return data as IOptions;
 };
 
-export function waitForEl(selector: string) {
+export const getElementBySelector = (selector: string) => () => document.querySelector(selector);
+
+export function waitForEl(getElement: () => Element | null) {
   return new Promise((resolve) => {
-    if (document.querySelector(selector)) {
-      return resolve(document.querySelector(selector));
+    if (getElement()) {
+      return resolve(getElement());
     }
 
     const observer = new MutationObserver(() => {
-      if (document.querySelector(selector)) {
-        resolve(document.querySelector(selector));
+      if (getElement()) {
+        resolve(getElement());
         observer.disconnect();
       }
     });
@@ -34,9 +38,9 @@ export function waitForEl(selector: string) {
   });
 }
 
-export function onElRemove(selector: string) {
+export function onElRemove(getElement: () => Element | null) {
   return new Promise<void>((resolve) => {
-    const element = document.querySelector(selector);
+    const element = getElement();
     if (!element) {
       resolve();
       return;
@@ -56,3 +60,5 @@ export function onElRemove(selector: string) {
     });
   });
 }
+
+export const getJWT = () => localStorage.getItem("token-storage");

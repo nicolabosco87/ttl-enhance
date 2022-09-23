@@ -1,4 +1,4 @@
-import { getOptions, onElRemove, waitForEl } from "../utils";
+import { getElementBySelector, getOptions, onElRemove, waitForEl } from "../utils";
 const confetti = require("canvas-confetti");
 
 const MIN_ANGLE_FOR_SUCCESSFUL_TRACK = 40;
@@ -34,7 +34,9 @@ const isSuccessfullTrack = () => {
 };
 
 export const initConfetti = () => {
-  waitForEl("[src*='needle']").then(() => {
+  const getNeedle = getElementBySelector("[src*='needle']");
+
+  waitForEl(getNeedle).then(() => {
     const needle = document.querySelector("[src*='needle']");
 
     if (needle && needle.parentElement?.parentElement?.parentElement) {
@@ -65,7 +67,8 @@ export const initConfetti = () => {
         }
       }, 1000);
 
-      onElRemove("#ttle-confetti").then(() => {
+      const getConfetti = getElementBySelector("#ttle-confetti");
+      onElRemove(getConfetti).then(() => {
         if (confettiInterval) {
           clearInterval(confettiInterval);
         }

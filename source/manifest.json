@@ -15,22 +15,22 @@
   "homepage_url": "https://github.com/nicolabosco87/ttl-enhance",
   "short_name": "TTLenhance",
 
-  "permissions": ["activeTab", "storage", "http://*/*", "https://*/*"],
+  "permissions": ["activeTab", "storage"],
 
-  "__chrome|opera|edge|dev__content_security_policy": {
-    "extension_pages": "script-src 'self' http://localhost:8097; object-src 'self'"
-  },
-
-  "__chrome|opera|edge|prod__content_security_policy": {
+  "__chrome|opera|edge__content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   },
-
-  "__firefox|dev__content_security_policy": "script-src 'self' http://localhost:8097; object-src 'self'",
-  "__firefox|prod__content_security_policy": "script-src 'self'; object-src 'self'",
+  "__firefox__content_security_policy": "script-src 'self'; object-src 'self'",
 
   "__chrome|firefox__author": "nicolabosco87",
   "__opera__developer": {
     "name": "nicolabosco87"
+  },
+
+  "__firefox__applications": {
+    "gecko": {
+      "id": "{b9752293-d8d4-4e26-8f7c-f174e220eb03}"
+    }
   },
 
   "__chrome__minimum_chrome_version": "49",

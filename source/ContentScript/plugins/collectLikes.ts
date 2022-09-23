@@ -1,8 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { SocketMessages } from "../types";
-import { log } from "../utils";
-
-const JWT_TOKEN = localStorage.getItem("token-storage");
+import { getJWT, getOptions, log, onElRemove, waitForEl } from "../utils";
 
 type TSongStat = {
   title: string;
@@ -14,7 +12,16 @@ type TSongStat = {
 export class CollectLikes {
   private connection: Socket;
 
-  private lastSongsStats: TSongStat[] = [];
+  private usersList: Map<string, string> = new Map();
+
+  private lastSongsStats: TSongStat[] = [
+    {
+      dislikes: 1,
+      dj: "Test",
+      likes: 2,
+      title: "Fu Ge La",
+    },
+  ];
 
   private currentSongTitle = "";
   private currentSongDj = "";
@@ -33,7 +40,7 @@ export class CollectLikes {
           transportOptions: {
             polling: {
               extraHeaders: {
-                authorization: `Bearer ${JWT_TOKEN}`,
+                authorization: `Bearer ${getJWT()}`,
                 "X-TT-password": null,
               },
             },
@@ -57,8 +64,7 @@ export class CollectLikes {
         // Resolve on successful connection
         this.connection.on("connect", () => {
           log("Collect Likes enabled");
-
-          this.updatePreviousPlayed();
+          this.handlePreviousPlayed();
         });
 
         // https://tt.live/src/data/room/hooks.ts
@@ -69,7 +75,13 @@ export class CollectLikes {
           console.log(SocketMessages.sendInitialState, args);
         });
         this.connection.on(SocketMessages.addAvatarToDancefloor, (...args) => {
-          console.log(SocketMessages.addAvatarToDancefloor, args);
+          // console.log(SocketMessages.addAvatarToDancefloor, args);
+
+          if (!this.usersList.has(args[0].userUuid)) {
+            this.usersList.set(args[0].userUuid, args[0].nickname);
+          }
+
+          console.log("addAvatarToDancefloor", this.usersList.entries());
         });
         this.connection.on(SocketMessages.takeDjSeat, (...args) => {
           console.log("takeDjSeat", args);
@@ -90,9 +102,10 @@ export class CollectLikes {
             console.log("UPDATED STATS by playNextSong", this.lastSongsStats);
           }
           this.currentSongTitle = args[0].song.trackName;
-          // this.currentSongTitle = args[0].song.trackName;
+          this.currentSongDj = args[0].userUuid;
           this.likes = [];
           this.dislikes = [];
+          this.refreshPreviousPlayedPanel();
         });
         this.connection.on(SocketMessages.updateRoomConfig, () => {
           console.log("updateRoomConfig");
@@ -119,8 +132,34 @@ export class CollectLikes {
     }
   };
 
-  updatePreviousPlayed = () => {
-    setInterval(() => {
+  // Handle panel refresh initialization with mount/unmount listeners
+  handlePreviousPlayed() {
+    this.refreshPreviousPlayedPanel();
+
+    const getPanel = () => {
+      const ul = document.querySelector("li[data-testid=song-listing-wrapper]:first-of-type");
+      if (!ul) return null;
+      return ul.closest("ul");
+    };
+
+    onElRemove(getPanel).then(() => {
+      console.log("PREVIOUS PLAYED REMOVED");
+      waitForEl(getPanel).then(() => {
+        console.log("PREVIOUS PLAYED RESUMED");
+        this.handlePreviousPlayed();
+      });
+    });
+  }
+
+  getUserNickname(uuid: string) {
+    return this.usersList.get(uuid) ?? "";
+  }
+
+  // Refresh the previous played panel adding stats + infos
+  refreshPreviousPlayedPanel = async () => {
+    const options = await getOptions();
+
+    if (options.stats) {
       const tracks = document.querySelectorAll<any>("li[data-testid=song-listing-wrapper]");
       if (tracks.length > 0) {
         tracks.forEach((el) => {
@@ -128,19 +167,27 @@ export class CollectLikes {
           const stats = this.lastSongsStats.find((s) => elTitle.indexOf(s.title) === 0);
 
           if (stats) {
-            const hasStats = el.querySelector(".tte-stats");
+            const hasStats = el.querySelector(".ttle-stats");
             if (!hasStats) {
               const titleCol = el.querySelector("div :nth-child(2)");
               if (titleCol) {
+                const nickname = this.getUserNickname(this.currentSongDj);
+                const nicknameHTML = nickname !== "" ? `<span class="ttle-stats__dj">${nickname}</span> | ` : "";
+
                 const statsDiv = document.createElement("div");
-                statsDiv.classList.add("tte-stats");
-                statsDiv.innerHTML = `<span class="tte-stats">${stats.likes} 👍 - ${stats.dislikes} 👎</span>`;
+                statsDiv.classList.add("ttle-stats");
+                statsDiv.innerHTML = `${nicknameHTML}${stats.likes} 👍 - ${stats.dislikes} 👎`;
                 titleCol.append(statsDiv);
               }
             }
           }
         });
       }
-    }, 1000);
+    } else {
+      const statsElements = document.querySelectorAll(".ttle-stats");
+      statsElements.forEach((el) => {
+        el.remove();
+      });
+    }
   };
 }

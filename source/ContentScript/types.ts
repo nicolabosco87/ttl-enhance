@@ -1,5 +1,6 @@
 export interface IOptions {
   autoDope: boolean;
+  stats: boolean;
   confetti: boolean;
   hideLightbulbs: boolean;
   moveVibeMeter: boolean;
