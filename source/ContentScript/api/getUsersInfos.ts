@@ -5,28 +5,30 @@ import { getJWT } from "../utils";
 export const getUsersInfos = async (uuids: string[]): Promise<Map<string, string>> => {
   const authtoken = getJWT();
 
-  if (!authtoken) return new Map();
-
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  };
+  if (!authtoken) return Promise.reject();
 
   const response = await axios.get(`${API_URL}/users/profiles`, {
     params: {
-      users: [1, 2, 3],
+      users: uuids,
     },
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      authtoken,
+      Authorization: `Bearer ${authtoken}`,
     },
     //   paramsSerializer: params => {
     //     return qs.stringify(params)
     //   }
   });
-  const res = (await response.json()) as ILoginRes;
+  const res = await response.data;
+
+  console.log(res);
+
+  const usersInfos = new Map<string, string>();
+
+  res.forEach((u: any) => {
+    usersInfos.set(u.id, u.userProfile.nickname);
+  });
+
+  return res;
 };

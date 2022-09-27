@@ -19,7 +19,7 @@ const initTTLEnhance = async () => {
   // Init global elements
   initButton();
   initModal();
-  collectLikes.init();
+  // collectLikes.init();
 
   const options = await getOptions();
 
