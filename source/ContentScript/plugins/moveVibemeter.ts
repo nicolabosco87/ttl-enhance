@@ -1,4 +1,4 @@
-import { log, waitForEl } from "./utils";
+import { getElementBySelector, log, waitForEl } from "../utils";
 
 export const handleMoveVibeMeter = (moveVibeMeter: boolean) => {
   const needleElement = document.querySelector("[src*='needle']");
@@ -18,7 +18,8 @@ export const handleMoveVibeMeter = (moveVibeMeter: boolean) => {
 export const initMoveVibeMeter = (moveVibeMeter: boolean) => {
   if (!moveVibeMeter) return;
 
-  waitForEl("[src*='needle']").then(() => handleMoveVibeMeter(moveVibeMeter));
+  const getNeedle = getElementBySelector("[src*='needle']");
+  waitForEl(getNeedle).then(() => handleMoveVibeMeter(moveVibeMeter));
 
   // const check = setInterval(() => {
   //   const needleElement = document.querySelector("[src*='needle']");

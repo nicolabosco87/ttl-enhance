@@ -1,4 +1,4 @@
-import { log, waitForEl } from "./utils";
+import { getElementBySelector, log, waitForEl } from "../utils";
 
 export const handleHideLightbulbs = (hideLightbulbs: boolean) => {
   const bulbElements = document.querySelectorAll("[src*='bulb']");
@@ -14,5 +14,7 @@ export const handleHideLightbulbs = (hideLightbulbs: boolean) => {
 
 export const initHideLightBulbs = (hideLightbulbs: boolean) => {
   if (!hideLightbulbs) return;
-  waitForEl("[src*='bulb']").then(() => handleHideLightbulbs(hideLightbulbs));
+
+  const getBulb = getElementBySelector("[src*='bulb']");
+  waitForEl(getBulb).then(() => handleHideLightbulbs(hideLightbulbs));
 };
